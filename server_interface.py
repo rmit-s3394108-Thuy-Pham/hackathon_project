@@ -12,9 +12,6 @@ def home():
     return render_template('blank_starter.html')
     return null;
 
-if __name__ == "__main__":
-    app.run()
-
 
 """On Swipe Right"""
 @app.route("/_accept")
@@ -32,15 +29,21 @@ def reject():
 
 """Initialize with random people"""
 def initilise():
-    session_users = []
-    users = user_accounts()
-    atts = userAttributes()
-    for each in users:
-        print(each)
-        users[each]
-        print(users[each])
+    print(user_accounts()) 
+    return jsonify(user_accounts())
 
-    return 
+    # session_users = []
+    # users = user_accounts()
+    # atts = userAttributes()
+    # for each in users:
+    #     print(each)
+    #     users[each]
+    #     print(users[each])
+    #     session_users.append(users[each])
+
+    # return jsonify(session_users)
+
+    # return 
 
 def userAttributes():
     attributes = {
@@ -65,3 +68,7 @@ def user_accounts():
         }
 
     return users
+
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', 5000)
