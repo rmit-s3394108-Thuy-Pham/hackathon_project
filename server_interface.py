@@ -8,6 +8,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
+    initilise()
     return render_template('blank_starter.html')
     return null;
 
@@ -15,13 +16,52 @@ if __name__ == "__main__":
     app.run()
 
 
-@app.route("/_hello")
-def test():
+"""On Swipe Right"""
+@app.route("/_accept")
+def accept():
     print("Someone swiped right ;) ")
     print("\n args: \n", request.args)
     
     message = "Success!!"
     return jsonify(message)
-    # return b64.encode("Hello")
 
+"""On Swipe Left"""
+@app.route("/_reject")
+def reject():
+    return
 
+"""Initialize with random people"""
+def initilise():
+    session_users = []
+    users = user_accounts()
+    atts = userAttributes()
+    for each in users:
+        print(each)
+        users[each]
+        print(users[each])
+
+    return 
+
+def userAttributes():
+    attributes = {
+        'Coding Strength' : '',
+        'Graphical design' : '',
+        'Getting coffee ability' : '',
+        'Languages spoken' : ''
+        }
+
+def user_accounts():
+    users = {
+        "Tyrion Lanister" : ['7','3','7','English'],
+        "Tywin Lanister" : ['2','4','1','English'],
+        "Dragon Lady" : ['1','3','1','English, Dragon'],
+        "Faceless Man" : ['4','9','1','English'],
+
+        
+        "Harry Potter" : ['3','5','9','English'],
+        "Hagrid" : ['4','9','1','English'],
+        "Ronald" : ['8','1','5','English'],
+        "Draco Malfoy" : ['4','6','3','English'],
+        }
+
+    return users
