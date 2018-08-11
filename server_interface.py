@@ -3,77 +3,101 @@ from flask import json
 from flask import jsonify
 from flask import render_template
 from flask import request
-# from flask_sqlalchemy import SQLAlchemy
-
 import sqlite3 as sq
 
 app = Flask(__name__)
 
-DATABASE_NAME = "student_profiles"
+STUDENT_DATABASE_NAME = "student_profiles"
 
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
-# db = SQLAlchemy(app)
-
-""""""
-# class test_user(db.Model):
-    # def __init__():
-        # id = db.Column(db.Integer, primary_key=True)
-        # username = db.Column(db.String(80), unique=True, nullable=False)
-        # email = db.Column(db.String(120), unique=True, nullable=False)
-#
-    # def __repr__(self):
-         # return '<User %r>' % self.username
 
 @app.route("/")
 def home():
-    conn = create_connection()
-    with conn:
-        update_student(conn, ('Thuy', '12 station', 'Melbourne', 1))
-        update_student(conn, ('Sulz', '2 lenon', 'Melbourne', 2))
-    select_all_student(conn)
     # initilise()
     return render_template('blank_starter.html')
-    return null;
 
-@app.route("/read_database")
+#student ID
+#Name
+#Attributes
 
-@app.route("/bb")
-def select_all_student():
-    conn = create_connection()
-    cur = conn.cursor()
 
-    # TODO!
-    #cur.execute("SELECT * FROM" + DATABASE_NAME)
-    cur.execute("SELECT * FROM student_profile7")
-    rows = cur.fetchall()
-    print('rows', rows)
-    # for row in rows:
-    #     print('Thuy')
+@app.route("/test", methods=['GET', 'POST'])
+def getmsgfromclient():
+    print("someone poked this endpoint")
+    print(request.data)
+    print(request.args)
+    print(request.get_json())
 
-def update_student(conn, profile):
-    sql = ''' INSERT INTO students_profile7 (name, addr, city, id)
-    VALUES (?,?,?,?)'''
-    # ''' UPDATE students_profile5
-    #           SET name = ? ,
-    #               addr = ? ,
-    #               city = ?
-    #           WHERE id = ?'''
-    cur = conn.cursor()
-    cur.execute(sql, profile)
+    for each in request.get_json():
+        print(each)
+        for _ in each:
+            print(_)
 
-def create_connection():
-    conn = sq.connect('database.db')
+    # print(json.loads(request.data))
+    return jsonify("Message from server")
+    return render_template('blank_starter.html')
+
+@app.route("/init")
+def initilise():
+    cursor = conn.cursor()
     print("Database opened\n\n")
-    conn.execute('CREATE TABLE students_profile7 (name TEXT, addr TEXT, city TEXT, id TEXT)')
+    dropTableStatement = "DROP TABLE student_profiles"
+    cursor.execute(dropTableStatement)
+    conn.execute('''CREATE TABLE ''' + STUDENT_DATABASE_NAME + ''' (studentID TEXT, name TEXT, address TEXT)''')
+    # conn.execute("CREATE TABLE " + RELATIONSHIP_DATABASE_NAME + "(user TEXT)")
     print("Table created successfully");
     return conn;
 
+@app.route("/create_user")
+def create_user(**kwargs):
+
+    f = open_db
+    user = [
+        "3436413", ["Sulz", 'Hawthorn'],
+        "3421232", ["Jim", "bananaland"]
+        ]
+
+    user_id = user[0]
+    user_name = user[1][0]
+    user_suburb = user[1][1]
+
+    f.write(user_id, user_name, user_suburb)
+
+    print(user_id)
+    print(user_name)
+    print(user_suburb)
+    # sql = "INSERT INTO " + STUDENT_DATABASE_NAME + " values(?, ?, ?);"
+
+    profile = ("3436413", "Sulz", "Hawthorn")
+
+    cur = conn.cursor()
+
+    cur.execute(sql, ("3436413", "Sulz", "Hawthorn"))
+
+    cur.execute("SELECT * FROM " + STUDENT_DATABASE_NAME)
+
+    rows = cur.fetchall()
+    print('rows', rows)
+
+    return None
+
+
+@app.route("/read_database")
+def read_database():
+    # conn = create_connection()
+    conn = sq.connect('database.db')
+    #
+    cur = conn.cursor()
+
+    cur.execute("SELECT * FROM " + STUDENT_DATABASE_NAME)
+
+    rows = cur.fetchall()
+    print('rows', rows)
 
 """On Swipe Right"""
 @app.route("/_accept")
 def accept():
     print("Someone swiped right ;) ")
-    print("\n args: \n", request.args)
+    # print("\n args: \n", request.args())
 
     message = "Success!!"
     return jsonify(message)
@@ -84,22 +108,10 @@ def reject():
     return
 
 """Initialize with random people"""
-def initilise():
-    print(user_accounts())
-    return jsonify(user_accounts())
+# def initilise():
+    # print(user_accounts())
+    # return jsonify(user_accounts())
 
-    # session_users = []
-    # users = user_accounts()
-    # atts = userAttributes()
-    # for each in users:
-    #     print(each)
-    #     users[each]
-    #     print(users[each])
-    #     session_users.append(users[each])
-
-    # return jsonify(session_users)
-
-    # return
 
 def userAttributes():
     attributes = {
@@ -116,7 +128,6 @@ def user_accounts():
         "Dragon Lady" : ['1','3','1','English, Dragon'],
         "Faceless Man" : ['4','9','1','English'],
 
-
         "Harry Potter" : ['3','5','9','English'],
         "Hagrid" : ['4','9','1','English'],
         "Ronald" : ['8','1','5','English'],
@@ -128,3 +139,13 @@ def user_accounts():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
+
+# def update_student(conn, profile):
+#     sql = "INSERT INTO " + STUDENT_DATABASE_NAME + "{ (name, addr, city) \
+#                 VALUES (?,?,?)}"
+#     cur = conn.cursor()
+#     cur.execute(sql, profile)
+#
+#     with conn:
+#         update_student(conn, ('Thuy', '12 station', 'Melbourne'))
+#         update_student(conn, ('Sulz', '2 lenon', 'Melbourne'))
