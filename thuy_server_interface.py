@@ -45,11 +45,6 @@ def add_user(**kwargs):
 @app.route("/read_database")
 def read_All():
 
-    nested_dict = {
-    'dictA' : {'key_1' : 'value 1', 'key_2' : 'value 2'},
-    'dictB' : {'key_1' : 'value 1', 'key_2' : 'value 2'}
-    }
-
     empty_arr = []
 
     fileref = open_DB()
@@ -68,13 +63,6 @@ def read_All():
 
     print(empty_arr)
     return jsonify(empty_arr)
-
-    # for each in users:
-    #     print(each)
-    #     for _ in each:
-    #         print(_)
-
-    # return jsonify(users)
     close_DB(fileref)
 
 
@@ -86,26 +74,47 @@ def read_One():
         student_ID = values[0]
         if student_ID == 's123456':
             print(aline)
+    close_DB(fileref)
 
 """On Swipe Right"""
 @app.route("/_accept")
-def accept(**kwargs):
-    user_id = 's3394108'
-    their_choice = 's123456'
-    fileref = open("relationships.txt", "a")
-    fileref.write(user_id + " " + their_choice)
-    fileref.write("\n")
-    fileref.close()
-    print("Someone swiped right ;) ")
-    # print("\n args: \n", request.args())
+def on_swipe():
 
-    message = "Success!!"
-    return jsonify(message)
+    data = request.get_json()
+    user_id = 's2'
+    their_choice = 's1'
+    match = 0
 
-"""On Swipe Left"""
-@app.route("/_reject")
-def reject():
-    return
+    if (macth == 1):
+        #case1: repeated swipe (invalid)
+        fileref = open("relationships.txt", "r")
+        check = 0
+        for aline in fileref:
+            values = aline.split()
+            student_ID = values[0]
+            if student_ID == user_id:
+                if their_choice == values [1]:
+                    check = 1
+                    return jsonify("This is a repeated swipe")
+        #case 2: instant match
+            elif their_choice == values[0]:
+                if user_id == values[1]:
+                    check = 1
+                    return jsonify ("This is an instant match")
+            else:
+                continue
+
+        fileref.close()
+        if check == 0:
+        #case 3: the one they swiped right is busy -> waiting Message
+            ref = open("relationships.txt", "a")
+            ref.write(user_id + " " + their_choice)
+            ref.write("\n")
+            ref.close()
+            message = "Your preference is recorded"
+        return jsonify(message)
+
+
 
 """Initialize with random people"""
 # def initilise():

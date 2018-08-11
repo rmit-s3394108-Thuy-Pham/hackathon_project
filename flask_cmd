@@ -1,2 +1,2 @@
-export FLASK_APP=server_interface.py
+export FLASK_APP=thuy_server_interface.py
 export FLASK_DEBUG=1
