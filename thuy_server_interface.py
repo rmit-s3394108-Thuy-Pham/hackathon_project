@@ -27,6 +27,23 @@ def open_DB():
 def close_DB(fileref):
     fileref.close()
 
+    @app.route("/test", methods=['GET', 'POST'])
+def getmsgfromclient():
+    print("someone poked this endpoint")
+    print(request.data)
+    print(request.args)
+    print(request.get_json())
+
+    # print(type(request.get_json))
+    # if len(request.get_json()):
+        # for each in request.get_json():
+            # print(each)
+            # for _ in each:
+                # print(_)
+
+    return jsonify("Message from server")
+    return render_template('blank_starter.html') 
+    
 @app.route("/create_user")
 def add_user(**kwargs):
     user_id = "s3394108"
