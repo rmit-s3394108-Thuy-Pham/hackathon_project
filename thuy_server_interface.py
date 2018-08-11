@@ -27,7 +27,7 @@ def open_DB():
 def close_DB(fileref):
     fileref.close()
 
-    @app.route("/test", methods=['GET', 'POST'])
+@app.route("/test", methods=['GET', 'POST'])
 def getmsgfromclient():
     print("someone poked this endpoint")
     print(request.data)
