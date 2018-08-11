@@ -3,22 +3,11 @@ from flask import json
 from flask import jsonify
 from flask import render_template
 from flask import request
-import sqlite3 as sq
-
 app = Flask(__name__)
-
-STUDENT_DATABASE_NAME = "student_profiles"
-
 
 @app.route("/")
 def home():
-    # initilise()
     return render_template('blank_starter.html')
-
-#student ID
-#Name
-#Attributes
-
 
 @app.route("/test", methods=['GET', 'POST'])
 def getmsgfromclient():
@@ -27,91 +16,73 @@ def getmsgfromclient():
     print(request.args)
     print(request.get_json())
 
-    for each in request.get_json():
-        print(each)
-        for _ in each:
-            print(_)
+    # print(type(request.get_json))
+    # if len(request.get_json()):
+        # for each in request.get_json():
+            # print(each)
+            # for _ in each:
+                # print(_)
 
-    # print(json.loads(request.data))
     return jsonify("Message from server")
     return render_template('blank_starter.html')
 
-@app.route("/init")
-def initilise():
-    cursor = conn.cursor()
-    print("Database opened\n\n")
-    dropTableStatement = "DROP TABLE student_profiles"
-    cursor.execute(dropTableStatement)
-    conn.execute('''CREATE TABLE ''' + STUDENT_DATABASE_NAME + ''' (studentID TEXT, name TEXT, address TEXT)''')
-    # conn.execute("CREATE TABLE " + RELATIONSHIP_DATABASE_NAME + "(user TEXT)")
-    print("Table created successfully");
-    return conn;
-
 @app.route("/create_user")
-def create_user(**kwargs):
+def add_user(**kwargs):
+    user_id, user_name, expectation, code_str, design_str = _genNewUser()
+    fileref = open("profiles.txt","a")
+    new_user = (user_id + " " + user_name + " " \
+                + expectation + " " + code_strength + " " + design_strength)
+    fileref.write(new_user)
+    fileref.write("\n")
+    fileref.close()
 
-    f = open_db
-    user = [
-        "3436413", ["Sulz", 'Hawthorn'],
-        "3421232", ["Jim", "bananaland"]
-        ]
+def _genNewUser():
+    user_id = 's'
+    for i in range(7):
+        user_id += randint(0, 10)
 
-    user_id = user[0]
-    user_name = user[1][0]
-    user_suburb = user[1][1]
+    user_name = 'username'
+    tiers = ['NN', 'PX', 'CR', 'Di', 'HD']
+    expectation = tiers[randint(0, 5)]
+    code_str = str(randint(1, 10))
+    design_str = str(randint(1, 10))
 
-    f.write(user_id, user_name, user_suburb)
-
-    print(user_id)
-    print(user_name)
-    print(user_suburb)
-    # sql = "INSERT INTO " + STUDENT_DATABASE_NAME + " values(?, ?, ?);"
-
-    profile = ("3436413", "Sulz", "Hawthorn")
-
-    cur = conn.cursor()
-
-    cur.execute(sql, ("3436413", "Sulz", "Hawthorn"))
-
-    cur.execute("SELECT * FROM " + STUDENT_DATABASE_NAME)
-
-    rows = cur.fetchall()
-    print('rows', rows)
-
-    return None
-
+    return user_id, user_name, expectation, code_str, design_str
 
 @app.route("/read_database")
-def read_database():
-    # conn = create_connection()
-    conn = sq.connect('database.db')
-    #
-    cur = conn.cursor()
+def read_All():
+    user_data = []
 
-    cur.execute("SELECT * FROM " + STUDENT_DATABASE_NAME)
+    fileref = open_DB()
+    for aline in fileref:
+        vals=aline.split(" ");
+        dic={}
+        dic['studentID']=vals[0]
+        dic['name']=vals[1]
+        dic['exp_val']=vals[2]
+        dic['code_str']=vals[3]
+        dic['des_str']=vals[4]
 
-    rows = cur.fetchall()
-    print('rows', rows)
+        user_data.append(dic);
+        # print('\n' + aline)
+    # print(user_data)
+    return jsonify(user_data)
 
 """On Swipe Right"""
 @app.route("/_accept")
 def accept():
     print("Someone swiped right ;) ")
-    # print("\n args: \n", request.args())
-
     message = "Success!!"
     return jsonify(message)
 
 """On Swipe Left"""
 @app.route("/_reject")
 def reject():
+    # Just load the next profile to be oberved
     return
 
-"""Initialize with random people"""
-# def initilise():
-    # print(user_accounts())
-    # return jsonify(user_accounts())
-
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
 
 def userAttributes():
     attributes = {
@@ -135,17 +106,3 @@ def user_accounts():
         }
 
     return users
-
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
-
-# def update_student(conn, profile):
-#     sql = "INSERT INTO " + STUDENT_DATABASE_NAME + "{ (name, addr, city) \
-#                 VALUES (?,?,?)}"
-#     cur = conn.cursor()
-#     cur.execute(sql, profile)
-#
-#     with conn:
-#         update_student(conn, ('Thuy', '12 station', 'Melbourne'))
-#         update_student(conn, ('Sulz', '2 lenon', 'Melbourne'))
